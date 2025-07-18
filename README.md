@@ -29,7 +29,7 @@ labserver-project/
 3. Access Portainer at: http://<VM-IP>:9000
 4. In Portainer: Environments -> Add environment -> Docker standalone -> Socket -> /var/run/docker.sock
 
-###DBeaver
+### DBeaver
 1. Download & install DBeaver CE from dbeaver.io/download
 2. In DBeaver: New Connection -> MySQL -> Next
 - Host: <VM-IP>
