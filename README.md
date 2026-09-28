@@ -39,3 +39,51 @@ labserver-project/
 - Password: set the lab password locally; do not commit it to Git
 3. Test Connection (should succeed) -> Finish
 4. Query your table: SELECT * FROM users;
+
+
+## Security Review
+
+**Review status:** Audited  
+**Last reviewed:** September 2026
+
+### Portainer Docker socket access
+
+The documented Portainer deployment mounts the host Docker socket into the Portainer container:
+
+```bash
+-v /var/run/docker.sock:/var/run/docker.sock
+```
+
+Portainer uses this socket to manage the Docker environment. This is therefore a privileged management boundary, not an ordinary application data volume. Access to the Portainer interface should be treated as administrative access to the Docker host.
+
+The repository also documents exposing Portainer on TCP port 9000 and adding a UFW rule for that port.
+
+### Planned remediation
+
+No immediate removal of the Docker socket is planned because the documented Portainer workflow depends on it.
+
+Before changing the deployment, the live VM should be reviewed to determine:
+
+- how Portainer is currently accessed;
+- which hosts or users require administrative access;
+- whether TCP/9000 is still required;
+- whether access can be restricted to trusted LAN/VPN management sources;
+- whether Portainer's Docker management capability is still needed for this project.
+
+The preferred hardening direction is to preserve the required Portainer functionality while minimizing who can reach the Portainer interface.
+
+**No Docker or firewall configuration change is being made as part of this documentation update.**
+
+### Validation plan
+
+After the access boundary is chosen:
+
+1. Verify Portainer remains healthy.
+2. Verify Portainer can still manage the intended Docker environment.
+3. Verify authorized management access.
+4. Verify unauthorized sources cannot reach the management interface.
+5. Confirm the MySQL workload remains unaffected.
+
+### Credential handling
+
+The repository no longer documents a committed database password. The previous credential found during the security audit is considered compromised and must not be reused.
